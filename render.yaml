@@ -3,7 +3,7 @@ services:
     name: dm-smart-inventory
     runtime: python
     plan: free
-    buildCommand: ./build.sh
+    buildCommand: bash build.sh
     startCommand: python -m gunicorn smart_inventory.wsgi:application
     envVars:
       - key: DATABASE_URL
