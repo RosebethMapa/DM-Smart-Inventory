@@ -64,7 +64,13 @@ WSGI_APPLICATION = "smart_inventory.wsgi.application"
 DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL:
     import dj_database_url
-    DATABASES = {"default": dj_database_url.config(conn_max_age=600, ssl_require=not DEBUG)}
+    DATABASES = {
+        "default": dj_database_url.config(
+            conn_max_age=int(os.getenv("DATABASE_CONN_MAX_AGE", "0")),
+            ssl_require=not DEBUG,
+        )
+    }
+    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
 else:
     DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3"}}
 
