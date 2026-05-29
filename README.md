@@ -1,5 +1,7 @@
 # DM Smart Inventory & Ordering System
 
+A web-based management system developed for a small retail store as part of a Software Design course project.
+
 Premium Django inventory app for small business stock, sales, low-stock alerts, reports, and printable receipts.
 
 Theme: DM Inventory Premium Operations Theme.
