@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Products | DM Inventory{% endblock %}
+{% block page_title %}Order Menu / Product Menu{% endblock %}
+{% block page_subtitle %}Select products to add to the order{% endblock %}
+{% block content %}
+<section class="toolbar">
+  <form class="search" method="get">
+    <input name="q" value="{{ query }}" placeholder="Search name, SKU, or barcode">
+    <select name="category">
+      <option value="">All categories</option>
+      {% for category in categories %}<option value="{{ category.pk }}" {% if selected_category == category.pk|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>{% endfor %}
+    </select>
+    <select name="supplier">
+      <option value="">All suppliers</option>
+      {% for supplier in suppliers %}<option value="{{ supplier.pk }}" {% if selected_supplier == supplier.pk|stringformat:"s" %}selected{% endif %}>{{ supplier.name }}</option>{% endfor %}
+    </select>
+    <select name="status">
+      <option value="">Active</option><option value="low" {% if status == "low" %}selected{% endif %}>Low stock</option>
+      <option value="out" {% if status == "out" %}selected{% endif %}>Out of stock</option><option value="archived" {% if status == "archived" %}selected{% endif %}>Archived</option>
+    </select>
+    <button class="btn" type="submit">Filter</button>
+  </form>
+  <a class="btn primary add-product-btn" href="{% url 'product_create' %}">Add product</a>
+</section>
+
+<section class="combined-product-order">
+  <div class="combined-catalog">
+    <section class="panel product-showcase">
+      <div class="panel-head">
+        <h2>Tap Product To Order</h2>
+        <span class="muted">{{ products|length }} shown</span>
+      </div>
+      <div class="catalog-grid" id="product-grid">
+        {% for product in products %}
+          <article class="catalog-card order-product-card" data-id="{{ product.pk }}" data-name="{{ product.name }}" data-price="{{ product.selling_price }}" data-stock="{{ product.current_stock }}" data-sku="{{ product.sku }}" data-category="{{ product.category.name }}" data-image="{{ product.image_src }}">
+            <div class="catalog-media">
+              {% if product.image_src %}
+                <img class="catalog-photo" src="{{ product.image_src }}" alt="{{ product.name }}">
+              {% else %}
+                <div class="product-photo placeholder">DM</div>
+              {% endif %}
+            </div>
+            <div class="catalog-card-body">
+              <div>
+                <strong>{{ product.name }}</strong>
+                <span>{{ product.category.name }} - {{ product.sku }}</span>
+              </div>
+              <div class="catalog-card-meta">
+                <b>PHP {{ product.selling_price }}</b>
+                {% if product.is_out_of_stock %}<span class="badge danger">Out</span>{% elif product.is_low_stock %}<span class="badge warning">Low {{ product.current_stock }}</span>{% else %}<span class="badge success">{{ product.current_stock }} left</span>{% endif %}
+              </div>
+            </div>
+            <div class="catalog-card-actions">
+              <a class="btn compact product-edit-link" href="{% url 'product_edit' product.pk %}">Edit</a>
+              <button class="btn compact add-only-button" type="button">Add</button>
+            </div>
+          </article>
+        {% empty %}
+          <p class="empty">No products found.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="panel inventory-table-panel">
+      <div class="panel-head"><h2>Inventory Details</h2></div>
+      <div class="table-wrap desktop-table">
+        <table>
+          <thead><tr><th>Product</th><th>SKU</th><th>Category</th><th>Supplier</th><th>Stock</th><th>Price</th><th></th></tr></thead>
+          <tbody>
+          {% for product in products %}
+            <tr>
+              <td>
+                <div class="table-product">
+                  {% if product.image_src %}
+                    <img src="{{ product.image_src }}" alt="{{ product.name }}">
+                  {% else %}
+                    <span class="product-photo placeholder mini">DM</span>
+                  {% endif %}
+                  <strong>{{ product.name }}</strong>
+                </div>
+              </td><td>{{ product.sku }}</td><td>{{ product.category.name }}</td><td>{{ product.supplier.name }}</td>
+              <td>{% if product.is_out_of_stock %}<span class="badge danger">Out</span>{% elif product.is_low_stock %}<span class="badge warning">{{ product.current_stock }}</span>{% else %}<span class="badge success">{{ product.current_stock }}</span>{% endif %}</td>
+              <td>PHP {{ product.selling_price }}</td>
+              <td class="actions"><a href="{% url 'product_edit' product.pk %}">Edit</a></td>
+            </tr>
+          {% empty %}<tr><td colspan="7">No products found.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <form method="post" id="sale-form" class="order-cart-panel product-order-panel">
+    {% csrf_token %}
+    {{ order_form.cart }}
+    <div class="order-card-head">
+      <div>
+        <h2>My Order</h2>
+        <span>Same page cart and payment</span>
+      </div>
+      <button class="btn compact" type="button" id="clear-cart">Clear</button>
+    </div>
+    <div class="customer-fields">
+      {{ order_form.customer_name }}
+      {{ order_form.customer_contact }}
+    </div>
+    <div id="cart-lines" class="cart-lines order-lines"></div>
+    <div class="totals order-totals">
+      <label>Status {{ order_form.order_status }}</label>
+      <label>Payment {{ order_form.payment_method }}</label>
+      <label>Discount {{ order_form.discount }}</label>
+      <label>Customer payment {{ order_form.amount_received }}</label>
+      <div><span>Subtotal</span><strong id="subtotal">PHP 0.00</strong></div>
+      <div><span>Total</span><strong id="total">PHP 0.00</strong></div>
+      <div><span>Change</span><strong id="change">PHP 0.00</strong></div>
+      <div><span>Balance</span><strong id="balance">PHP 0.00</strong></div>
+    </div>
+    {% if order_form.non_field_errors %}<div class="form-errors">{{ order_form.non_field_errors }}</div>{% endif %}
+    <button class="btn success full sticky-checkout" type="submit">Save order</button>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/pos.js' %}"></script>{% endblock %}

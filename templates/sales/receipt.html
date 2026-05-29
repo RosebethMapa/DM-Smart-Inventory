@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Receipt #{{ sale.pk }} | DM Inventory{% endblock %}
+{% block page_title %}Receipt #{{ sale.pk }}{% endblock %}
+{% block page_subtitle %}Ready for customer printing{% endblock %}
+{% block content %}
+<section class="receipt-shell">
+  <div class="receipt">
+    <div class="receipt-head">
+      <div class="receipt-store-mark">DM</div>
+      <h2>{{ business.business_name|default:"DM Inventory" }}</h2>
+      <p>Official Sales Receipt</p>
+      <small>Receipt No. {{ sale.pk|stringformat:"06d" }} &bull; {{ sale.created_at|date:"M d, Y h:i A" }}</small>
+    </div>
+
+    <div class="receipt-meta-grid">
+      <div><span>Cashier</span><strong>{{ sale.cashier.username }}</strong></div>
+      <div><span>Status</span><strong>{{ sale.get_status_display }}</strong></div>
+      <div><span>Customer</span><strong>{{ sale.customer_name|default:"Walk-in customer" }}</strong></div>
+      <div><span>Contact</span><strong>{{ sale.customer_contact|default:"-" }}</strong></div>
+    </div>
+
+    <div class="receipt-table-head">
+      <span>Item</span>
+      <span>Qty</span>
+      <span>Price</span>
+      <span>Total</span>
+    </div>
+    {% for item in sale.items.all %}
+      <div class="receipt-line">
+        <div><strong>{{ item.product.name }}</strong><span>{{ item.product.sku }}</span></div>
+        <span>{{ item.quantity }}</span>
+        <span>{{ business.currency_symbol|default:"PHP" }} {{ item.price_at_sale }}</span>
+        <b>{{ business.currency_symbol|default:"PHP" }} {{ item.line_total }}</b>
+      </div>
+    {% endfor %}
+
+    <div class="receipt-summary">
+      <div class="receipt-total"><span>Subtotal</span><strong>{{ business.currency_symbol|default:"PHP" }} {{ sale.subtotal }}</strong></div>
+      <div class="receipt-total"><span>Discount</span><strong>{{ business.currency_symbol|default:"PHP" }} {{ sale.discount }}</strong></div>
+      <div class="receipt-total grand"><span>Total</span><strong>{{ business.currency_symbol|default:"PHP" }} {{ sale.total_amount }}</strong></div>
+      <div class="receipt-total"><span>Payment method</span><strong>{{ sale.get_payment_method_display }}</strong></div>
+      <div class="receipt-total"><span>Amount received</span><strong>{{ business.currency_symbol|default:"PHP" }} {{ sale.amount_received }}</strong></div>
+      <div class="receipt-total"><span>Change</span><strong>{{ business.currency_symbol|default:"PHP" }} {{ sale.change }}</strong></div>
+      <div class="receipt-total"><span>Balance due</span><strong>{{ business.currency_symbol|default:"PHP" }} {{ sale.balance_due }}</strong></div>
+    </div>
+
+    <p class="receipt-foot">{{ business.receipt_footer|default:"Thank you for shopping with us." }}</p>
+    <p class="receipt-note">Please keep this receipt for exchange, payment, or warranty reference.</p>
+  </div>
+  <div class="form-actions no-print">
+    <a class="btn" href="{% url 'product_list' %}">Back to order/product</a>
+    <a class="btn" href="{% url 'order_history' %}">Order history</a>
+    <button class="btn primary" onclick="window.print()">Print receipt</button>
+  </div>
+</section>
+{% endblock %}

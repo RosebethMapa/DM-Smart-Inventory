@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data" class="form-panel">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="form-actions"><a class="btn ghost" href="{% url 'product_list' %}">Cancel</a><button class="btn primary" type="submit">Save product</button></div>
+</form>
+{% endblock %}

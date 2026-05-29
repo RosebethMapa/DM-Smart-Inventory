@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="wall" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#050b16"/>
+      <stop offset=".48" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#071020"/>
+    </linearGradient>
+    <radialGradient id="spot" cx="50%" cy="12%" r="60%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".28"/>
+      <stop offset=".42" stop-color="#2563eb" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity=".45"/>
+    </filter>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1080" height="1600" fill="url(#wall)"/>
+  <rect width="1080" height="1600" fill="url(#spot)"/>
+
+  <g opacity=".45">
+    <rect x="42" y="230" width="176" height="620" rx="18" fill="#020617"/>
+    <rect x="70" y="286" width="120" height="38" rx="6" fill="#1e40af"/>
+    <g fill="#dbeafe" opacity=".5">
+      <rect x="70" y="380" width="34" height="82" rx="8"/>
+      <rect x="116" y="360" width="34" height="102" rx="8"/>
+      <rect x="162" y="392" width="34" height="70" rx="8"/>
+      <rect x="70" y="530" width="34" height="82" rx="8"/>
+      <rect x="116" y="510" width="34" height="102" rx="8"/>
+      <rect x="162" y="542" width="34" height="70" rx="8"/>
+      <rect x="70" y="680" width="34" height="82" rx="8"/>
+      <rect x="116" y="660" width="34" height="102" rx="8"/>
+      <rect x="162" y="692" width="34" height="70" rx="8"/>
+    </g>
+    <rect x="850" y="300" width="188" height="690" rx="18" fill="#020617"/>
+    <g fill="#dbeafe" opacity=".38">
+      <rect x="884" y="360" width="34" height="84" rx="8"/>
+      <rect x="930" y="382" width="34" height="62" rx="8"/>
+      <rect x="976" y="344" width="34" height="100" rx="8"/>
+      <rect x="884" y="520" width="34" height="84" rx="8"/>
+      <rect x="930" y="542" width="34" height="62" rx="8"/>
+      <rect x="976" y="504" width="34" height="100" rx="8"/>
+      <rect x="884" y="680" width="34" height="84" rx="8"/>
+      <rect x="930" y="702" width="34" height="62" rx="8"/>
+      <rect x="976" y="664" width="34" height="100" rx="8"/>
+    </g>
+  </g>
+
+  <g opacity=".65">
+    <line x1="820" y1="0" x2="820" y2="260" stroke="#475569" stroke-width="4"/>
+    <ellipse cx="820" cy="290" rx="72" ry="38" fill="#f59e0b" opacity=".42"/>
+    <path d="M752 260h136c-8 48-36 72-68 72s-60-24-68-72Z" fill="#111827"/>
+    <line x1="935" y1="0" x2="935" y2="210" stroke="#475569" stroke-width="4"/>
+    <ellipse cx="935" cy="240" rx="60" ry="30" fill="#f59e0b" opacity=".38"/>
+    <path d="M878 212h114c-8 40-30 60-57 60s-49-20-57-60Z" fill="#111827"/>
+  </g>
+
+  <g transform="translate(150 380)" filter="url(#softShadow)">
+    <text x="0" y="330" font-family="Arial Black, Arial, sans-serif" font-size="330" font-weight="900" fill="#f8fafc">D</text>
+    <text x="330" y="330" font-family="Arial Black, Arial, sans-serif" font-size="330" font-weight="900" fill="#2563eb">M</text>
+    <g transform="translate(420 0)" filter="url(#glow)">
+      <path d="M0 58h70l36 98h260l-35 122H126l22 58h178" fill="none" stroke="#f8fafc" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="132" y1="196" x2="322" y2="196" stroke="#2563eb" stroke-width="22" stroke-linecap="round"/>
+      <circle cx="166" cy="360" r="31" fill="#2563eb"/>
+      <circle cx="292" cy="360" r="31" fill="#2563eb"/>
+    </g>
+    <line x1="55" y1="406" x2="290" y2="406" stroke="#2563eb" stroke-width="8"/>
+    <line x1="532" y1="406" x2="760" y2="406" stroke="#2563eb" stroke-width="8"/>
+    <text x="310" y="430" font-family="Arial, sans-serif" font-size="76" font-weight="800" letter-spacing="28" fill="#f8fafc">STORE</text>
+    <text x="352" y="502" font-family="Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="14" fill="#3b82f6">DAISY MAPA</text>
+    <text x="95" y="585" font-family="Arial, sans-serif" font-size="27" font-weight="800" letter-spacing="9" fill="#e2e8f0">QUALITY PRODUCTS, TRUSTED SERVICE</text>
+  </g>
+
+  <rect x="0" y="1150" width="1080" height="450" fill="#020617" opacity=".48"/>
+</svg>

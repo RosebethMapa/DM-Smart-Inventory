@@ -1,0 +1,93 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order Sent | DM Store</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #071326;
+      color: #f8fafc;
+      font-family: Inter, Arial, sans-serif;
+      padding: 18px;
+    }
+
+    .success-card {
+      width: min(520px, 100%);
+      border: 1px solid #1f3f6c;
+      background: #0b1d38;
+      border-radius: 8px;
+      padding: 26px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+    }
+
+    p {
+      color: #93c5fd;
+      font-weight: 700;
+    }
+
+    .order-summary {
+      border-top: 1px solid #1f3f6c;
+      border-bottom: 1px solid #1f3f6c;
+      padding: 14px 0;
+      margin: 18px 0;
+    }
+
+    .order-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 8px 0;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      background: #2563eb;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-weight: 900;
+    }
+
+    a.secondary {
+      background: #10264a;
+      border: 1px solid #31558d;
+    }
+  </style>
+</head>
+<body>
+  <section class="success-card">
+    <h1>Order Sent</h1>
+    <p>Your order is pending. Please wait for admin confirmation.</p>
+
+    <div class="order-summary">
+      <div class="order-line"><span>Order number</span><strong>#{{ sale.pk }}</strong></div>
+      {% for item in sale.items.all %}
+        <div class="order-line"><span>{{ item.quantity }} x {{ item.product.name }}</span><strong>PHP {{ item.line_total }}</strong></div>
+      {% endfor %}
+      <div class="order-line"><span>Total</span><strong>PHP {{ sale.total_amount }}</strong></div>
+    </div>
+
+    <div class="actions">
+      <a href="{% url 'customer_order' %}">New Order</a>
+      <a class="secondary" href="{% url 'dashboard' %}">Admin View</a>
+    </div>
+  </section>
+</body>
+</html>

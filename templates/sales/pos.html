@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Sales POS | DM Inventory{% endblock %}
+{% block page_title %}Sales POS{% endblock %}
+{% block content %}
+<form method="post" id="sale-form" class="pos-layout">
+  {% csrf_token %}
+  {{ form.cart }}
+  <section class="panel product-picker">
+    <input id="product-search" placeholder="Search product, SKU, or barcode" autocomplete="off">
+    <div class="product-grid" id="product-grid">
+      {% for product in products %}
+        <button class="product-tile" type="button" data-id="{{ product.pk }}" data-name="{{ product.name }}" data-price="{{ product.selling_price }}" data-stock="{{ product.current_stock }}" data-sku="{{ product.sku }}">
+          <strong>{{ product.name }}</strong>
+          <span>{{ product.sku }} - {{ product.current_stock }} {{ product.unit_type }}</span>
+          <b>PHP {{ product.selling_price }}</b>
+        </button>
+      {% endfor %}
+    </div>
+  </section>
+  <aside class="panel cart-panel">
+    <div class="panel-head"><h2>Cart</h2><button class="btn ghost" type="button" id="clear-cart">Clear</button></div>
+    <div id="cart-lines" class="cart-lines"></div>
+    <div class="totals">
+      <label>Discount {{ form.discount }}</label>
+      <div><span>Subtotal</span><strong id="subtotal">PHP 0.00</strong></div>
+      <div><span>Total</span><strong id="total">PHP 0.00</strong></div>
+      <label>Payment method {{ form.payment_method }}</label>
+      <label>Amount received {{ form.amount_received }}</label>
+      <div><span>Change</span><strong id="change">PHP 0.00</strong></div>
+      <div><span>Balance due</span><strong id="balance">PHP 0.00</strong></div>
+    </div>
+    {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+    <button class="btn success full sticky-checkout" type="submit">Complete sale</button>
+  </aside>
+</form>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/pos.js' %}"></script>{% endblock %}

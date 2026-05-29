@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block page_title %}Reports{% endblock %}
+{% block page_subtitle %}View and analyze your business performance{% endblock %}
+{% block content %}
+<section class="toolbar">
+  <form class="search" method="get">
+    <input type="date" name="start" value="{{ start_date }}">
+    <input type="date" name="end" value="{{ end_date }}">
+    <button class="btn" type="submit">View Report</button>
+  </form>
+</section>
+<section class="metric-grid">
+  <article class="metric metric-blue"><div class="metric-top"><span class="metric-icon">S</span>Total Income</div><strong>PHP {{ summary.revenue|floatformat:2 }}</strong><span class="muted">{{ summary.orders }} sale(s) in range</span></article>
+  <article class="metric metric-navy"><div class="metric-top"><span class="metric-icon">C</span>Total Cost</div><strong>PHP {{ summary.cost|floatformat:2 }}</strong><span class="muted">Cost at sale</span></article>
+  <article class="metric metric-green"><div class="metric-top"><span class="metric-icon">P</span>Total Profit</div><strong>PHP {{ summary.profit|floatformat:2 }}</strong><span class="muted">Gross estimate</span></article>
+</section>
+<section class="content-grid">
+  <div class="panel">
+    <div class="panel-head"><h2>Daily Income / Profit History</h2><span class="muted">{{ start_date }} to {{ end_date }}</span></div>
+    <div class="table-wrap desktop-table">
+      <table>
+        <thead><tr><th>Date</th><th>Orders</th><th>Income</th><th>Cost</th><th>Profit</th></tr></thead>
+        <tbody>
+          {% for row in daily %}
+            <tr>
+              <td>{{ row.period|date:"M d, Y" }}</td>
+              <td>{{ row.orders }}</td>
+              <td>PHP {{ row.total|floatformat:2 }}</td>
+              <td>PHP {{ row.cost|floatformat:2 }}</td>
+              <td><strong>PHP {{ row.profit|floatformat:2 }}</strong></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5">No sales in this date range.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards">
+      {% for row in daily %}
+        <article class="item-card">
+          <div><strong>{{ row.period|date:"M d, Y" }}</strong><span>{{ row.orders }} order(s)</span></div>
+          <div><span>Income PHP {{ row.total|floatformat:2 }}</span><span class="badge success">Profit PHP {{ row.profit|floatformat:2 }}</span></div>
+        </article>
+      {% empty %}
+        <p class="empty">No sales in this date range.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="panel"><div class="panel-head"><h2>Top Selling Products</h2><a href="{% url 'product_list' %}">View all</a></div>{% for row in best_sellers %}<div class="stack-row"><span>{{ row.product__name }}</span><strong>{{ row.units }} sold</strong></div>{% empty %}<p class="empty">No sales yet.</p>{% endfor %}</div>
+</section>
+<section class="panel">
+  <div class="panel-head"><h2>Sales Transaction History</h2><span class="muted">Recent sales in selected range</span></div>
+  <div class="table-wrap desktop-table">
+    <table>
+      <thead><tr><th>Date</th><th>Order</th><th>Customer</th><th>Status</th><th>Income</th><th>Profit</th></tr></thead>
+      <tbody>
+        {% for sale in recent_sales %}
+          <tr>
+            <td>{{ sale.created_at|date:"M d, Y h:i A" }}</td>
+            <td>#{{ sale.pk }}</td>
+            <td>{{ sale.customer_name|default:"Walk-in" }}</td>
+            <td>{{ sale.get_status_display }}</td>
+            <td>PHP {{ sale.total_amount|floatformat:2 }}</td>
+            <td><strong>PHP {{ sale.profit|floatformat:2 }}</strong></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6">No sales in this date range.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="mobile-cards">
+    {% for sale in recent_sales %}
+      <article class="item-card">
+        <div><strong>Order #{{ sale.pk }}</strong><span>{{ sale.created_at|date:"M d, Y h:i A" }} - {{ sale.customer_name|default:"Walk-in" }}</span></div>
+        <div><span>{{ sale.get_status_display }}</span><span class="badge success">PHP {{ sale.total_amount|floatformat:2 }}</span></div>
+      </article>
+    {% empty %}
+      <p class="empty">No sales in this date range.</p>
+    {% endfor %}
+  </div>
+</section>
+<section class="panel">
+  <div class="panel-head"><h2>Pending / Unpaid Orders</h2><a href="{% url 'order_history' %}">View orders</a></div>
+  {% for order in pending_orders %}
+    <div class="stack-row"><span>Order #{{ order.pk }} - {{ order.customer_name|default:"Walk-in" }}</span><strong>PHP {{ order.total_amount }}</strong></div>
+  {% empty %}
+    <p class="empty">No pending orders.</p>
+  {% endfor %}
+</section>
+<section class="panel"><div class="panel-head"><h2>Supplier and Stock Movement History</h2></div>
+  <div class="table-wrap desktop-table"><table><thead><tr><th>Date</th><th>Product</th><th>Type</th><th>Supplier</th><th>Qty</th></tr></thead><tbody>
+    {% for m in movements %}<tr><td>{{ m.created_at|date:"M d" }}</td><td>{{ m.product.name }}</td><td>{{ m.get_movement_type_display }}</td><td>{{ m.supplier|default:"-" }}</td><td>{{ m.quantity }}</td></tr>{% endfor %}
+  </tbody></table></div>
+  <div class="mobile-cards">
+    {% for m in movements %}
+      <article class="item-card movement-card">
+        <div>
+          <strong>{{ m.product.name }}</strong>
+          <span>{{ m.created_at|date:"M d" }} - {{ m.get_movement_type_display }}</span>
+        </div>
+        <div>
+          <span>{{ m.supplier|default:"No supplier" }}</span>
+          <span class="badge {% if m.quantity < 0 %}danger{% else %}success{% endif %}">{{ m.quantity }}</span>
+        </div>
+      </article>
+    {% empty %}
+      <p class="empty">No movement history yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

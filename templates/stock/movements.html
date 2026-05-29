@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block page_title %}Stock Movements{% endblock %}
+{% block content %}
+<section class="toolbar"><a class="btn primary" href="{% url 'stock_in' %}">Stock in</a><a class="btn" href="{% url 'stock_adjustment' %}">Adjust stock</a></section>
+<section class="panel">
+  <div class="table-wrap desktop-table">
+    <table>
+      <thead><tr><th>Date</th><th>Product</th><th>Type</th><th>Qty</th><th>Before</th><th>After</th><th>Ref</th></tr></thead>
+      <tbody>
+      {% for m in movements %}
+        <tr><td>{{ m.created_at|date:"M d, H:i" }}</td><td>{{ m.product.name }}</td><td>{{ m.get_movement_type_display }}</td><td>{{ m.quantity }}</td><td>{{ m.stock_before }}</td><td>{{ m.stock_after }}</td><td>{{ m.reference }}</td></tr>
+      {% empty %}<tr><td colspan="7">No stock movements yet.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="mobile-cards">
+    {% for m in movements %}
+      <article class="item-card movement-card">
+        <div>
+          <strong>{{ m.product.name }}</strong>
+          <span>{{ m.created_at|date:"M d, H:i" }} - {{ m.get_movement_type_display }}</span>
+        </div>
+        <div>
+          <span>Before {{ m.stock_before }} / After {{ m.stock_after }}</span>
+          <span class="badge {% if m.quantity < 0 %}danger{% else %}success{% endif %}">{{ m.quantity }}</span>
+        </div>
+        {% if m.reference %}<p>{{ m.reference }}</p>{% endif %}
+      </article>
+    {% empty %}
+      <p class="empty">No stock movements yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

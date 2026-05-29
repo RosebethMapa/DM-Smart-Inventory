@@ -1,0 +1,536 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer Order | DM Inventory</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, .16), transparent 34%),
+        linear-gradient(135deg, #061226, #06202a);
+      color: #f8fafc;
+    }
+
+    .customer-shell {
+      max-width: 1560px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    .customer-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .customer-brand {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .customer-logo {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+      border-radius: 22px;
+      background: #071326;
+      box-shadow: 0 22px 50px rgba(0, 0, 0, .28);
+    }
+
+    .customer-title h1 {
+      margin: 0;
+      font-size: 40px;
+      font-weight: 950;
+      line-height: 1.05;
+      color: #fff;
+    }
+
+    .customer-title p {
+      margin: 10px 0 0;
+      color: #9dbaf0;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .customer-admin-link {
+      display: inline-flex;
+      min-height: 58px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 28px;
+      border: 1px solid #2d4f86;
+      border-radius: 8px;
+      background: #0b1d38;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 950;
+      font-size: 18px;
+    }
+
+    .customer-toolbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1.4fr) minmax(210px, .75fr) auto;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .customer-toolbar input,
+    .customer-toolbar select {
+      width: 100%;
+      min-height: 58px;
+      border: 1px solid #25466f;
+      border-radius: 8px;
+      background: #071a33;
+      color: #f8fafc;
+      padding: 0 18px;
+      font-size: 17px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .customer-toolbar button {
+      min-height: 58px;
+      padding: 0 24px;
+    }
+
+    .customer-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 420px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .customer-panel {
+      border: 1px solid #1e3c65;
+      background: #0b1d38;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 22px 50px rgba(0, 0, 0, .18);
+    }
+
+    .customer-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .customer-panel-head h2 {
+      margin: 0;
+      color: #fff;
+      font-size: 25px;
+      font-weight: 950;
+    }
+
+    .customer-panel-head span {
+      color: #9dbaf0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .customer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .customer-card {
+      border: 1px solid #1e3c65;
+      background: #0b1d38;
+      border-radius: 8px;
+      padding: 20px;
+      color: #fff;
+      text-align: left;
+      cursor: pointer;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color .18s ease, transform .18s ease;
+    }
+
+    .customer-card:hover {
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+    }
+
+    .customer-card img {
+      width: 128px;
+      height: 128px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: white;
+      margin-bottom: 18px;
+    }
+
+    .customer-card strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.18;
+      margin-bottom: 8px;
+    }
+
+    .customer-card small {
+      color: #9dbaf0;
+      font-size: 15px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .customer-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 24px;
+    }
+
+    .customer-card-meta b {
+      color: #48a1ff;
+      font-size: 21px;
+      font-weight: 950;
+    }
+
+    .stock-badge {
+      color: #5df59a;
+      background: rgba(20, 184, 111, .18);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .customer-card-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .customer-cart {
+      position: sticky;
+      top: 22px;
+      max-height: calc(100vh - 44px);
+      overflow: auto;
+    }
+
+    .customer-cart .order-card-head {
+      margin-bottom: 20px;
+    }
+
+    .customer-cart .customer-fields input {
+      background: #071a33;
+      border-color: #25466f;
+    }
+
+    .customer-cart .order-totals {
+      border-top: 1px solid #25466f;
+      margin-top: 18px;
+      padding-top: 18px;
+    }
+
+    .customer-cart .cart-lines {
+      min-height: 120px;
+    }
+
+    .customer-cart .customer-cart-line,
+    .customer-cart .cart-line,
+    .customer-cart .order-lines .cart-line {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr) 72px 36px;
+      gap: 12px;
+      align-items: center;
+      border-top: 1px solid #25466f;
+      padding: 12px 0;
+    }
+
+    .customer-cart .customer-cart-line img,
+    .customer-cart .cart-thumb,
+    .customer-cart .cart-line img {
+      width: 58px;
+      height: 58px;
+      max-width: 58px;
+      max-height: 58px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .customer-cart .customer-cart-line strong,
+    .customer-cart .cart-line strong {
+      display: block;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .customer-cart .customer-cart-line span,
+    .customer-cart .cart-line span {
+      display: block;
+      color: #9dbaf0;
+      font-size: 13px;
+    }
+
+    .customer-cart .customer-cart-line input,
+    .customer-cart .cart-line input {
+      width: 72px;
+      min-width: 0;
+      height: 48px;
+      margin: 0;
+      text-align: center;
+      background: #071a33;
+      color: #fff;
+      border: 1px solid #25466f;
+      border-radius: 8px;
+      font-weight: 900;
+    }
+
+    .customer-cart .customer-cart-line b,
+    .customer-cart .cart-line b {
+      display: none;
+    }
+
+    .customer-cart .order-totals strong {
+      color: #48a1ff;
+    }
+
+    .customer-cart .customer-cart-line button,
+    .customer-cart .cart-line button {
+      color: #fecaca;
+      width: 36px;
+      height: 36px;
+      min-height: 36px;
+      padding: 0;
+      border-radius: 8px;
+      font-size: 0;
+      background: rgba(239, 68, 68, .12);
+      border: 0;
+    }
+
+    .customer-cart .customer-cart-line button::after,
+    .customer-cart .cart-line button::after {
+      content: "x";
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    @media (max-width: 1100px) {
+      .customer-main {
+        grid-template-columns: 1fr;
+      }
+
+      .customer-cart {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        order: -1;
+        max-height: 58vh;
+      }
+
+      .customer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .customer-shell {
+        padding: 18px;
+        padding-bottom: 28px;
+      }
+
+      .customer-topbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .customer-brand {
+        align-items: flex-start;
+      }
+
+      .customer-logo {
+        width: 72px;
+        height: 72px;
+      }
+
+      .customer-title h1 {
+        font-size: 28px;
+      }
+
+      .customer-title p {
+        font-size: 15px;
+      }
+
+      .customer-admin-link {
+        width: 100%;
+      }
+
+      .customer-toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .customer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .customer-panel {
+        padding: 16px;
+      }
+
+      .customer-card {
+        min-height: 260px;
+        padding: 14px;
+      }
+
+      .customer-card img {
+        width: 86px;
+        height: 86px;
+        margin-bottom: 14px;
+      }
+
+      .customer-card strong {
+        font-size: 16px;
+      }
+
+      .customer-card small {
+        font-size: 13px;
+      }
+
+      .customer-card-meta {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 16px;
+      }
+
+      .customer-card-meta b {
+        font-size: 17px;
+      }
+
+      .stock-badge {
+        font-size: 13px;
+        padding: 7px 9px;
+      }
+
+      .customer-card-actions .btn {
+        width: 100%;
+      }
+
+      .customer-cart {
+        max-height: 54vh;
+      }
+
+      .customer-cart .customer-cart-line,
+      .customer-cart .cart-line,
+      .customer-cart .order-lines .cart-line {
+        grid-template-columns: 54px minmax(0, 1fr) 64px 34px;
+        gap: 10px;
+      }
+
+      .customer-cart .customer-cart-line img,
+      .customer-cart .cart-thumb,
+      .customer-cart .cart-line img {
+        width: 54px;
+        height: 54px;
+        max-width: 54px;
+        max-height: 54px;
+      }
+
+      .customer-cart .customer-cart-line input,
+      .customer-cart .cart-line input {
+        width: 64px;
+        height: 44px;
+      }
+
+      .customer-cart .sticky-checkout {
+        position: sticky;
+        bottom: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="customer-shell">
+    <header class="customer-topbar">
+      <div class="customer-brand">
+        <img class="customer-logo" src="{% static 'images/dm-store-logo.svg' %}" alt="DM Store Daisy Mapa">
+        <div class="customer-title">
+          <h1>Order Menu / Product Menu</h1>
+          <p>Select products to add to the order</p>
+        </div>
+      </div>
+      <a class="customer-admin-link" href="{% url 'dashboard' %}">Admin View</a>
+    </header>
+
+    <section class="customer-toolbar">
+      <input id="customer-search" name="q" value="{{ query }}" placeholder="Search name, SKU, or barcode" autocomplete="off">
+      <select id="customer-category" name="category">
+        <option value="">All categories</option>
+        {% for category in categories %}<option value="{{ category.pk }}" {% if selected_category == category.pk|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>{% endfor %}
+      </select>
+      <button class="btn" type="button" id="customer-filter-button">Filter</button>
+    </section>
+
+    <section class="customer-main">
+      <section class="customer-panel">
+        <div class="customer-panel-head">
+          <h2>Tap Product To Order</h2>
+          <span>{{ products|length }} shown</span>
+        </div>
+        <div class="customer-grid" id="customer-product-grid">
+          {% for product in products %}
+            <button class="customer-card customer-product-card" type="button" data-id="{{ product.pk }}" data-name="{{ product.name }}" data-price="{{ product.selling_price }}" data-stock="{{ product.current_stock }}" data-sku="{{ product.sku }}" data-category="{{ product.category.name }}" data-category-id="{{ product.category_id }}" data-image="{{ product.image_src }}">
+              {% if product.image_src %}
+                <img src="{{ product.image_src }}" alt="{{ product.name }}">
+              {% else %}
+                <span class="product-photo placeholder">DM</span>
+              {% endif %}
+              <strong>{{ product.name }}</strong>
+              <small>{{ product.category.name }} - {{ product.sku }}</small>
+              <div class="customer-card-meta">
+                <b>PHP {{ product.selling_price }}</b>
+                <span class="stock-badge">{{ product.current_stock }} left</span>
+              </div>
+              <span class="customer-card-actions"><span class="btn compact add-only-button">Add</span></span>
+            </button>
+          {% empty %}
+            <p class="empty">No products found.</p>
+          {% endfor %}
+        </div>
+      </section>
+
+      <form method="post" id="sale-form" class="order-cart-panel product-order-panel customer-cart">
+        {% csrf_token %}
+        {{ form.cart }}
+        <div class="order-card-head">
+          <div>
+            <h2>My Order</h2>
+            <span>Send order for admin confirmation</span>
+          </div>
+          <button class="btn compact" type="button" id="clear-cart">Clear</button>
+        </div>
+        {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="customer-fields">
+          {{ form.customer_name }}
+          {{ form.customer_contact }}
+        </div>
+        <div id="cart-lines" class="cart-lines order-lines"></div>
+        <div class="totals order-totals">
+          <div><span>Total</span><strong id="customer-total">PHP 0.00</strong></div>
+        </div>
+        <button class="btn success full sticky-checkout" id="submit-order" type="submit">Submit Order</button>
+      </form>
+    </section>
+  </main>
+  <script src="{% static 'js/customer_order.js' %}"></script>
+</body>
+</html>

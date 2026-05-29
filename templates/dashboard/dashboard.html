@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | DM Inventory{% endblock %}
+{% block page_title %}Good morning, {{ display_name }}!{% endblock %}
+{% block page_subtitle %}Here's what's happening with your store today.{% endblock %}
+{% block content %}
+<section class="analytics-kpis">
+  <article class="analytics-card">
+    <div><span>Total Products</span><strong>{{ total_products }}</strong></div>
+    <i class="kpi-icon orders">P</i>
+    <small class="up">All items in store</small>
+  </article>
+  <article class="analytics-card">
+    <div><span>Stock Value</span><strong>PHP {{ stock_value|floatformat:2 }}</strong></div>
+    <i class="kpi-icon complete">V</i>
+    <small class="up">Inventory value</small>
+  </article>
+  <article class="analytics-card">
+    <div><span>Sales Today</span><strong>PHP {{ today_sales|floatformat:2 }}</strong></div>
+    <i class="kpi-icon sales">S</i>
+    <small class="up">from today's orders</small>
+  </article>
+  <article class="analytics-card">
+    <div><span>Profit Today</span><strong>PHP {{ profit_today|floatformat:2 }}</strong></div>
+    <i class="kpi-icon sales">G</i>
+    <small class="up">estimated gross profit</small>
+  </article>
+  <article class="analytics-card">
+    <div><span>Low Stock</span><strong>{{ low_stock_count }}</strong></div>
+    <i class="kpi-icon cancel">L</i>
+    <small class="down">{{ out_of_stock_count }} out of stock</small>
+  </article>
+</section>
+
+<section class="analytics-grid">
+  <article class="analytics-panel statistic-panel">
+    <div class="analytics-head"><div><h2>Sales Overview</h2><span>Revenue and sales movement</span></div><a class="btn compact" href="{% url 'reports' %}">Last 7 days</a></div>
+    <div class="line-chart">
+      <svg viewBox="0 0 640 250" preserveAspectRatio="none">
+        <path d="M0 190 C60 165 90 205 130 160 S210 95 260 130 S335 230 395 160 S485 85 548 120 S600 76 640 92" class="chart-line revenue"/>
+        <path d="M0 210 C58 220 110 180 160 195 S240 210 290 150 S360 112 420 140 S510 195 560 155 S610 120 640 132" class="chart-line sales"/>
+        <path d="M0 230 C80 218 120 235 170 205 S250 172 310 188 S390 230 450 210 S530 150 580 198 S620 222 640 176" class="chart-line cancel"/>
+      </svg>
+      <div class="chart-tip"><span>Revenue: PHP {{ today_sales|floatformat:2 }}</span><span>Profit: PHP {{ profit_today|floatformat:2 }}</span><span>Pending: {{ pending_orders }}</span></div>
+    </div>
+  </article>
+
+  <article class="analytics-panel">
+    <div class="analytics-head"><div><h2>Top Selling Products</h2><span>Best-moving items today</span></div><a class="btn compact" href="{% url 'reports' %}">View all</a></div>
+    {% for item in fast_moving_products %}
+      <div class="latest-order-row">
+        <div class="source-badge">#</div>
+        <div><strong>{{ item.product__name }}</strong><span>{{ item.units }} sold</span></div>
+        <b>{{ item.units }}%</b>
+      </div>
+    {% empty %}
+      <p class="empty">No sales yet today.</p>
+    {% endfor %}
+  </article>
+</section>
+
+<section class="analytics-bottom">
+  <article class="analytics-panel latest-panel">
+    <div class="analytics-head">
+      <div><h2>Latest Orders</h2><span>Recent customer transactions</span></div>
+      <a class="btn compact" href="{% url 'order_history' %}">See all</a>
+    </div>
+    <div class="latest-order-list">
+      {% for sale in recent_sales %}
+        <div class="latest-order-row">
+          <div class="source-badge">DM</div>
+          <div><strong>Order #{{ sale.pk }}</strong><span>{{ sale.customer_name|default:"Walk-in customer" }}</span></div>
+          <b>PHP {{ sale.total_amount }}</b>
+          <span class="status-pill {{ sale.status }}">{{ sale.get_status_display }}</span>
+        </div>
+      {% empty %}
+        <p class="empty">No sales yet.</p>
+      {% endfor %}
+    </div>
+  </article>
+
+  <article class="analytics-panel urgent">
+    <div class="analytics-head"><div><h2>Needs Attention</h2><span>Low-stock reorder suggestions</span></div><a href="{% url 'low_stock' %}">View all</a></div>
+    {% for product in low_stock_products %}
+      <div class="latest-order-row">
+        <div class="source-badge warning">!</div>
+        <div><strong>{{ product.name }}</strong><span>{{ product.supplier.name }} - {{ product.current_stock }} left</span></div>
+        <a class="btn warning compact" href="{% url 'stock_in' %}">Order {{ product.suggested_reorder }}</a>
+      </div>
+    {% empty %}
+      <p class="empty">All products are above reorder level.</p>
+    {% endfor %}
+  </article>
+</section>
+{% endblock %}

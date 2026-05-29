@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block page_title %}Stock Adjustment{% endblock %}
+{% block content %}
+<form method="post" class="form-panel">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="form-actions"><button class="btn primary" type="submit">Save adjustment</button></div>
+</form>
+{% endblock %}

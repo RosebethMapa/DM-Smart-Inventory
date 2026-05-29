@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DM Inventory Preview</title>
+  <link rel="stylesheet" href="static/css/app.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#">
+      <span class="brand-mark">DM</span>
+      <span><strong>DM Inventory</strong><small>Daisy Mapa Smart Inventory</small></span>
+    </a>
+    <nav class="nav">
+      <a class="active" href="#"><span class="nav-icon">D</span>Dashboard</a>
+      <a href="#"><span class="nav-icon">P</span>Products</a>
+      <a href="#"><span class="nav-icon">I</span>Stock In</a>
+      <a href="#"><span class="nav-icon">S</span>Sales POS</a>
+      <a href="#"><span class="nav-icon">L</span>Low Stock</a>
+      <a href="#"><span class="nav-icon">R</span>Reports</a>
+    </nav>
+  </aside>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <h1>Dashboard</h1>
+        <p class="eyebrow">Daily store operations</p>
+      </div>
+      <div class="top-actions">
+        <span class="user-pill">owner</span>
+        <button class="btn ghost" type="button">Logout</button>
+      </div>
+    </header>
+
+    <section class="metric-grid">
+      <article class="metric metric-blue"><div class="metric-top"><span class="metric-icon">P</span><span>Total products</span></div><strong>128</strong></article>
+      <article class="metric metric-navy"><div class="metric-top"><span class="metric-icon">V</span><span>Stock value</span></div><strong>PHP 86,420.00</strong></article>
+      <article class="metric metric-green"><div class="metric-top"><span class="metric-icon">S</span><span>Today sales</span></div><strong>PHP 12,850.00</strong></article>
+      <article class="metric metric-green"><div class="metric-top"><span class="metric-icon">G</span><span>Profit today</span></div><strong>PHP 3,210.00</strong></article>
+      <article class="metric metric-amber"><div class="metric-top"><span class="metric-icon">L</span><span>Low stock</span></div><strong>7</strong></article>
+      <article class="metric metric-red"><div class="metric-top"><span class="metric-icon">O</span><span>Out of stock</span></div><strong>2</strong></article>
+    </section>
+
+    <section class="content-grid">
+      <div class="panel urgent">
+        <div class="panel-head"><h2>Needs Attention</h2><a href="#">View all</a></div>
+        <div class="stack-row">
+          <div><strong>Bottled Water</strong><span>Main Supplier - 4 left</span></div>
+          <span class="badge danger">Order 24</span>
+        </div>
+        <div class="stack-row">
+          <div><strong>Cooking Oil 1L</strong><span>Main Supplier - 8 left</span></div>
+          <span class="badge warning">Order 16</span>
+        </div>
+        <div class="stack-row">
+          <div><strong>Rice 1kg</strong><span>Local Supplier - 10 left</span></div>
+          <span class="badge warning">Order 20</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Fast Movers Today</h2></div>
+        <div class="stack-row"><strong>Coffee Sachet</strong><span>42 units</span></div>
+        <div class="stack-row"><strong>Iced Tea</strong><span>19 units</span></div>
+        <div class="stack-row"><strong>Rice 1kg</strong><span>12 units</span></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Recent Stock Movements</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Product</th><th>Type</th><th>Qty</th><th>After</th><th>User</th><th>Date</th></tr></thead>
+          <tbody>
+            <tr><td>Bottled Water</td><td>Sale</td><td>-3</td><td>4</td><td>staff</td><td>Apr 29, 15:10</td></tr>
+            <tr><td>Cooking Oil 1L</td><td>Stock in</td><td>12</td><td>20</td><td>owner</td><td>Apr 29, 14:44</td></tr>
+            <tr><td>Coffee Sachet</td><td>Sale</td><td>-8</td><td>80</td><td>staff</td><td>Apr 29, 14:18</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <nav class="mobile-nav">
+    <a class="active" href="#"><span>D</span>Dashboard</a>
+    <a href="#"><span>P</span>Products</a>
+    <a href="#"><span>S</span>Sales</a>
+    <a href="#"><span>I</span>Stock</a>
+    <a href="#"><span>R</span>Reports</a>
+  </nav>
+</body>
+</html>

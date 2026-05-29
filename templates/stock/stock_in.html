@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block page_title %}Stock In{% endblock %}
+{% block page_subtitle %}Add new inventory and update stock counts safely{% endblock %}
+{% block content %}
+<section class="stock-in-layout">
+  <form method="post" class="form-panel stock-in-form">
+    {% csrf_token %}
+    <div class="panel-head form-wide">
+      <div>
+        <h2>Stock In Information</h2>
+        <span class="muted">Record supplier delivery, quantity, cost, and notes.</span>
+      </div>
+    </div>
+    {{ form.as_p }}
+    <div class="form-actions"><a class="btn ghost" href="{% url 'stock_movements' %}">View movements</a><button class="btn success" type="submit">Save Stock In</button></div>
+  </form>
+
+  <aside class="stock-side">
+    <article class="panel">
+      <div class="panel-head"><h2>Stock In Summary</h2></div>
+      <div class="stack-row"><span>Database</span><strong>Supabase</strong></div>
+      <div class="stack-row"><span>Action</span><strong>Increase stock</strong></div>
+      <div class="stack-row"><span>Audit</span><strong>Movement saved</strong></div>
+    </article>
+    <article class="panel">
+      <div class="panel-head"><h2>Quick Rule</h2></div>
+      <p class="empty">Use this page when new items arrive from a supplier. The product stock increases after saving.</p>
+    </article>
+  </aside>
+</section>
+{% endblock %}

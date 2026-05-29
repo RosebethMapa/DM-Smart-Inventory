@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block page_title %}Low Stock{% endblock %}
+{% block page_subtitle %}Products that are running low and need restocking{% endblock %}
+{% block content %}
+<section class="metric-grid low-stock-summary">
+  <article class="metric metric-red"><div class="metric-top"><span class="metric-icon">!</span>Total Low Stock Items</div><strong>{{ products|length }}</strong><span class="muted">Items running low</span></article>
+  <article class="metric metric-amber"><div class="metric-top"><span class="metric-icon">R</span>Reorder Needed</div><strong>{{ products|length }}</strong><span class="muted">Stock almost out</span></article>
+  <article class="metric metric-green"><div class="metric-top"><span class="metric-icon">S</span>Restock Action</div><strong>Ready</strong><span class="muted">Use Stock In</span></article>
+</section>
+<section class="panel">
+  <div class="panel-head">
+    <h2>Low Stock Items</h2>
+    <a class="btn compact" href="{% url 'stock_in' %}">Restock</a>
+  </div>
+  <div class="table-wrap desktop-table">
+    <table>
+      <thead><tr><th>#</th><th>Product</th><th>Category</th><th>Current Stock</th><th>Reorder Level</th><th>Status</th><th>Supplier</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for product in products %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><strong>{{ product.name }}</strong><br><span class="muted">{{ product.sku }}</span></td>
+            <td>{{ product.category.name }}</td>
+            <td><span class="badge {% if product.is_out_of_stock %}danger{% else %}warning{% endif %}">{{ product.current_stock }}</span></td>
+            <td>{{ product.reorder_level }}</td>
+            <td>{% if product.is_out_of_stock %}<span class="badge danger">Out of stock</span>{% else %}<span class="badge warning">Low</span>{% endif %}</td>
+            <td>{{ product.supplier.name }}</td>
+            <td><a class="btn compact primary" href="{% url 'stock_in' %}">Restock {{ product.suggested_reorder }}</a></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="8">No low-stock products today.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="mobile-cards">
+    {% for product in products %}
+      <article class="item-card">
+        <div><strong>{{ product.name }}</strong><span>{{ product.supplier.name }} - reorder level {{ product.reorder_level }}</span></div>
+        <div><span class="badge {% if product.is_out_of_stock %}danger{% else %}warning{% endif %}">{{ product.current_stock }} left</span><a class="btn compact primary" href="{% url 'stock_in' %}">Restock {{ product.suggested_reorder }}</a></div>
+      </article>
+    {% empty %}<p class="empty">No low-stock products today.</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

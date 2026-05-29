@@ -1,0 +1,13 @@
+.deps/
+.vendor/
+.tmp/
+.pyuser/
+.env
+.env.*
+!.env.example
+.env_folder_backup/
+__pycache__/
+*.pyc
+db.sqlite3
+staticfiles/
+media/

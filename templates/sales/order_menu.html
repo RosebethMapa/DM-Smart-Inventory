@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Order Menu | DM Inventory{% endblock %}
+{% block page_title %}Order Menu{% endblock %}
+{% block page_subtitle %}Select store items, calculate total, and save the order{% endblock %}
+{% block content %}
+<form method="post" id="sale-form" class="order-shell">
+  {% csrf_token %}
+  {{ form.cart }}
+  <section class="order-menu-panel">
+    <div class="order-search">
+      <input id="product-search" placeholder="Search store item, SKU, or barcode" autocomplete="off">
+      <a class="btn" href="{% url 'order_history' %}">History</a>
+    </div>
+    <div class="order-promo">
+      <div>
+        <span>DM Smart Inventory & Ordering System</span>
+        <h2>Store Item Collection</h2>
+        <p>Tap an item to add it to the order. Stock only decreases when the order is paid or completed.</p>
+      </div>
+    </div>
+    <div class="order-tabs">
+      <button type="button" class="active" data-filter="">All</button>
+      {% for category in categories %}
+        <button type="button" data-filter="{{ category.name }}">{{ category.name }}</button>
+      {% endfor %}
+    </div>
+    <div class="order-product-grid" id="product-grid">
+      {% for product in products %}
+        <button class="order-product-card" type="button" data-id="{{ product.pk }}" data-name="{{ product.name }}" data-price="{{ product.selling_price }}" data-stock="{{ product.current_stock }}" data-sku="{{ product.sku }}" data-category="{{ product.category.name }}" data-image="{{ product.image_src }}">
+          {% if product.image_src %}
+            <img src="{{ product.image_src }}" alt="{{ product.name }}">
+          {% else %}
+            <span class="product-photo placeholder mobile">DM</span>
+          {% endif %}
+          <span class="favorite-dot">Add</span>
+          <strong>{{ product.name }}</strong>
+          <small>{{ product.category.name }} - {{ product.current_stock }} available</small>
+          <b>PHP {{ product.selling_price }}</b>
+        </button>
+      {% empty %}
+        <p class="empty">No products found.</p>
+      {% endfor %}
+    </div>
+  </section>
+  <aside class="order-cart-panel">
+    <div class="order-card-head">
+      <div>
+        <h2>My Order</h2>
+        <span>Cart and payment</span>
+      </div>
+      <button class="btn compact" type="button" id="clear-cart">Clear</button>
+    </div>
+    <div class="customer-fields">
+      {{ form.customer_name }}
+      {{ form.customer_contact }}
+    </div>
+    <div id="cart-lines" class="cart-lines order-lines"></div>
+    <div class="totals order-totals">
+      <label>Status {{ form.order_status }}</label>
+      <label>Payment {{ form.payment_method }}</label>
+      <label>Discount {{ form.discount }}</label>
+      <label>Customer payment {{ form.amount_received }}</label>
+      <div><span>Subtotal</span><strong id="subtotal">PHP 0.00</strong></div>
+      <div><span>Total</span><strong id="total">PHP 0.00</strong></div>
+      <div><span>Change</span><strong id="change">PHP 0.00</strong></div>
+      <div><span>Balance</span><strong id="balance">PHP 0.00</strong></div>
+    </div>
+    {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+    <button class="btn success full sticky-checkout" type="submit">Save order</button>
+  </aside>
+</form>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/pos.js' %}"></script>{% endblock %}

@@ -1,0 +1,28 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login | DM Inventory</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="auth-page">
+  <section class="welcome-copy">
+    <span>DM Store</span>
+    <h1>Quality products, trusted service.</h1>
+    <p>Welcome to Daisy Mapa's smart inventory and ordering system.</p>
+  </section>
+  <section class="login-panel">
+    <div class="brand auth-brand"><span class="brand-mark">DM</span><span><strong>DM Inventory</strong><small>Daisy Mapa Smart Inventory</small></span></div>
+    <h1>Welcome back</h1>
+    <p class="muted">Sign in to manage inventory, orders, payments, and low-stock decisions.</p>
+    <form method="post" class="form-card">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn primary full" type="submit">Login</button>
+    </form>
+    <a class="btn ghost full" href="{% url 'customer_order' %}">Customer Order</a>
+  </section>
+</body>
+</html>

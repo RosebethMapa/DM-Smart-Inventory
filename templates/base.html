@@ -1,0 +1,439 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}DM Inventory{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --sidebar: #0f172a;
+      --sidebar-2: #111c33;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --border: #e2e8f0;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,.10), transparent 35%),
+        linear-gradient(135deg, #f8fafc, #eef2ff);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, var(--sidebar), var(--sidebar-2));
+      color: white;
+      padding: 26px 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      box-shadow: 18px 0 40px rgba(15, 23, 42, 0.18);
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: white;
+      margin-bottom: 38px;
+    }
+
+    .brand-mark {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 18px;
+      box-shadow: 0 12px 28px rgba(37, 99, 235, .35);
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 20px;
+      letter-spacing: .2px;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 4px;
+      font-size: 13px;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 15px 16px;
+      border-radius: 16px;
+      color: #dbeafe;
+      text-decoration: none;
+      font-weight: 800;
+      transition: .25s ease;
+    }
+
+    .nav a:hover {
+      background: rgba(255,255,255,.10);
+      transform: translateX(4px);
+    }
+
+    .nav a.active {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      box-shadow: 0 14px 30px rgba(37,99,235,.35);
+    }
+
+    .nav-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.13);
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .app {
+      width: calc(100% - 280px);
+      margin-left: 280px;
+      padding: 36px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(226,232,240,.9);
+      border-radius: 24px;
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 38px;
+      font-weight: 950;
+      letter-spacing: -1px;
+    }
+
+    .eyebrow {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-pill {
+      padding: 14px 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      font-weight: 900;
+      box-shadow: 0 8px 20px rgba(15,23,42,.06);
+    }
+
+    .btn {
+      border: 0;
+      padding: 14px 20px;
+      border-radius: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .btn.ghost {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn.ghost:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(37,99,235,.25);
+    }
+
+    .toast-stack {
+      position: fixed;
+      right: 28px;
+      top: 28px;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .toast {
+      background: white;
+      border-left: 5px solid var(--primary);
+      padding: 16px 18px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      font-weight: 800;
+    }
+
+    .mobile-nav {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        display: none;
+      }
+
+      .app {
+        width: 100%;
+        margin-left: 0;
+        padding: 18px;
+        padding-bottom: 96px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+      }
+
+      .topbar h1 {
+        font-size: 30px;
+      }
+
+      .top-actions {
+        width: 100%;
+      }
+
+      .user-pill,
+      .btn {
+        flex: 1;
+        text-align: center;
+      }
+
+      .mobile-nav {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        position: fixed;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        background: rgba(15,23,42,.94);
+        backdrop-filter: blur(14px);
+        border-radius: 24px;
+        padding: 10px;
+        z-index: 100;
+        box-shadow: 0 18px 45px rgba(15,23,42,.30);
+      }
+
+      .mobile-nav a {
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 800;
+        text-align: center;
+        padding: 8px 4px;
+        border-radius: 16px;
+      }
+
+      .mobile-nav a span {
+        display: block;
+        width: 28px;
+        height: 28px;
+        margin: 0 auto 4px;
+        border-radius: 10px;
+        background: rgba(255,255,255,.12);
+        line-height: 28px;
+      }
+
+      .mobile-nav a.active {
+        background: #2563eb;
+        color: white;
+      }
+
+      .top-actions form {
+        display: none !important;
+      }
+
+      body[data-page="order_history"] .top-actions form {
+        display: block !important;
+        margin-left: auto;
+      }
+
+      body:not([data-page="order_history"]) .top-actions {
+        display: none !important;
+      }
+
+      .add-product-btn {
+        display: inline-flex !important;
+        position: static !important;
+        width: 100% !important;
+        flex: none !important;
+        height: 44px !important;
+        min-height: 44px !important;
+      }
+
+      .product-showcase .add-only-button,
+      .product-showcase .favorite-dot {
+        font-size: 0 !important;
+      }
+
+      .product-showcase .add-only-button::after,
+      .product-showcase .favorite-dot::before {
+        content: "Add" !important;
+        font-size: 14px !important;
+        font-weight: 900 !important;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=mobile-clean-7">
+</head>
+
+<body data-page="{{ request.resolver_match.url_name|default:'' }}">
+  <div class="layout">
+
+    <aside class="sidebar">
+      <a class="brand" href="{% url 'dashboard' %}">
+        <img class="brand-logo" src="{% static 'images/dm-store-logo.svg' %}" alt="DM Store Daisy Mapa">
+      </a>
+
+      <div class="sidebar-profile">
+        <img src="{% static 'images/tita-profile.jpg' %}" onerror="this.onerror=null;this.src='{% static 'images/tita-profile.svg' %}'" alt="Admin profile">
+        <div>
+          <strong>{{ display_name }}</strong>
+          <span>Owner / Admin</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5V20h-5v-6H9v6H4z"/></svg></span>Dashboard
+        </a>
+
+        <a class="{% if request.resolver_match.url_name == 'product_list' or request.resolver_match.url_name == 'order_menu' %}active{% endif %}" href="{% url 'product_list' %}">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7.5 12 4l7 3.5v9L12 20l-7-3.5z"/><path d="M5 7.5 12 11l7-3.5M12 11v9"/></svg></span>Products / Orders
+        </a>
+
+        <a href="{% url 'customer_order' %}">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M8 10h8M8 14h5"/></svg></span>Customer View
+        </a>
+
+        <a class="{% if request.resolver_match.url_name == 'stock_in' %}active{% endif %}" href="{% url 'stock_in' %}">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/><path d="M8 9h8M8 13h8"/></svg></span>Stock In
+        </a>
+
+        <a class="{% if request.resolver_match.url_name == 'order_history' %}active{% endif %}" href="{% url 'order_history' %}">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10v16H7z"/><path d="M10 8h4M10 12h4M10 16h3"/></svg></span>Order History
+        </a>
+
+        <a class="{% if request.resolver_match.url_name == 'low_stock' %}active{% endif %}" href="{% url 'low_stock' %}">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 3 20h18z"/><path d="M12 9v5M12 17h.01"/></svg></span>Low Stock
+        </a>
+
+        <a class="{% if request.resolver_match.url_name == 'reports' %}active{% endif %}" href="{% url 'reports' %}">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V5h14v14z"/><path d="M9 16V9M12 16v-4M15 16V7"/></svg></span>Reports
+        </a>
+      </nav>
+    </aside>
+
+    <main class="app">
+      <header class="topbar">
+        <div>
+          <h1>{% block page_title %}DM Inventory{% endblock %}</h1>
+          <p class="eyebrow">{% block page_subtitle %}Daily store operations{% endblock %}</p>
+        </div>
+
+        <div class="top-actions">
+          {% if user.is_authenticated %}
+            <span class="user-pill">{{ display_name }}</span>
+            <form class="logout-form {% if request.resolver_match.url_name == 'order_history' %}show-mobile{% endif %}" method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button class="btn ghost" type="submit">Logout</button>
+            </form>
+          {% endif %}
+        </div>
+      </header>
+
+      {% if messages %}
+        <div class="toast-stack">
+          {% for message in messages %}
+            <div class="toast {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+  </div>
+
+  <nav class="mobile-nav">
+    <a class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+      <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5V20h-5v-6H9v6H4z"/></svg></span>Dashboard
+    </a>
+
+    <a class="{% if request.resolver_match.url_name == 'product_list' or request.resolver_match.url_name == 'order_menu' %}active{% endif %}" href="{% url 'product_list' %}">
+      <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7.5 12 4l7 3.5v9L12 20l-7-3.5z"/><path d="M5 7.5 12 11l7-3.5M12 11v9"/></svg></span>Products
+    </a>
+
+    <a class="{% if request.resolver_match.url_name == 'customer_order' %}active{% endif %}" href="{% url 'customer_order' %}">
+      <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M8 10h8M8 14h5"/></svg></span>Customer
+    </a>
+
+    <a class="{% if request.resolver_match.url_name == 'stock_in' %}active{% endif %}" href="{% url 'stock_in' %}">
+      <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/><path d="M8 9h8M8 13h8"/></svg></span>Stock
+    </a>
+
+    <a class="{% if request.resolver_match.url_name == 'reports' %}active{% endif %}" href="{% url 'reports' %}">
+      <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V5h14v14z"/><path d="M9 16V9M12 16v-4M15 16V7"/></svg></span>Reports
+    </a>
+
+  </nav>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

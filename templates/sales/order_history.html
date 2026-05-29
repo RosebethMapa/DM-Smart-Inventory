@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Order History | DM Inventory{% endblock %}
+{% block page_title %}Order History{% endblock %}
+{% block page_subtitle %}Track pending, paid, completed, and cancelled orders{% endblock %}
+{% block content %}
+<section class="order-history-toolbar">
+  <form method="get" class="order-search small">
+    <select name="status">
+      <option value="">All orders</option>
+      {% for value, label in status_choices %}
+        <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn" type="submit">Filter</button>
+  </form>
+  <a class="btn primary" href="{% url 'order_menu' %}">New order</a>
+</section>
+<section class="order-history-grid">
+  {% for order in orders %}
+    <article class="history-card">
+      <div class="history-card-head">
+        <div>
+          <strong>Order #{{ order.pk }}</strong>
+          <span>{{ order.created_at|date:"M d, Y h:i A" }}</span>
+        </div>
+        <span class="status-pill {{ order.status }}">{{ order.get_status_display }}</span>
+      </div>
+      <div class="history-items">
+        {% for item in order.items.all|slice:":2" %}
+          <div class="history-item">
+            {% if item.product.image_src %}<img src="{{ item.product.image_src }}" alt="{{ item.product.name }}">{% else %}<span class="product-photo placeholder mini">DM</span>{% endif %}
+            <div><strong>{{ item.product.name }}</strong><span>Qty: {{ item.quantity }} - PHP {{ item.line_total }}</span></div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="history-total">
+        <span>{{ order.items.count }} item(s)</span>
+        <strong>PHP {{ order.total_amount }}</strong>
+      </div>
+      <div class="history-actions">
+        {% if order.status == "pending" %}
+          <form method="post" action="{% url 'set_order_status' order.pk 'cancelled' %}">{% csrf_token %}<button class="btn danger compact" type="submit">Cancel</button></form>
+          <form method="post" action="{% url 'set_order_status' order.pk 'paid' %}">{% csrf_token %}<button class="btn success compact" type="submit">Paid</button></form>
+        {% elif order.status == "paid" %}
+          <form method="post" action="{% url 'set_order_status' order.pk 'completed' %}">{% csrf_token %}<button class="btn success compact" type="submit">Complete</button></form>
+        {% endif %}
+      </div>
+    </article>
+  {% empty %}
+    <p class="empty">No orders available.</p>
+  {% endfor %}
+</section>
+{% endblock %}
